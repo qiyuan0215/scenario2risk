@@ -1,0 +1,175 @@
+# Internal engine: FAVAR return simulation.
+# Not exported; called by portfolio_risk() and model_check().
+
+simulate_favar_returns <- function(macro_data,
+                                   return_data,
+                                   horizon = 60,
+                                   n_scenarios = 1000,
+                                   k = 2,
+                                   var_lag = 1,
+                                   seed = 123) {
+
+  model_data <- prepare_model_data(macro_data, return_data)
+  data <- model_data$data
+  returns <- model_data$returns
+  predictors <- model_data$predictors
+
+  # Fit FAVAR once, then simulate future states.
+  fit <- fit_favar(data, returns, predictors, k = k, var_lag = var_lag)
+  states <- simulate_favar(fit, horizon, n_scenarios, seed)
+
+  # Keep only the simulated asset-return variables in a tidy long table.
+  make_return_paths(states, data, returns, horizon, n_scenarios)
+}
+
+make_macro_factors <- function(data, predictors, k = 2) {
+  # Keep dates for later joins; PCA itself only uses numeric predictors.
+  x <- data |>
+    dplyr::select(.data$date, dplyr::all_of(predictors))
+
+  k <- min(k, length(predictors))
+
+
+  # Scaling the predictors for the PCA.
+  scaled_x <- scale(x[, predictors, drop = FALSE])
+  pca <- stats::prcomp(scaled_x, center = FALSE, scale. = FALSE)
+
+  # Store the first k principal-component scores as macro factors.
+  factor_names <- paste0("factor", seq_len(k))
+  scores <- tibble::as_tibble(pca$x[, seq_len(k), drop = FALSE])
+  names(scores) <- factor_names
+  scores <- dplyr::bind_cols(tibble::tibble(date = x$date), scores)
+
+  list(
+    scores = scores,
+    pca = pca,
+    k = k
+  )
+}
+
+fit_favar <- function(data, returns, predictors, k, var_lag = 1) {
+  var_lag <- as.integer(var_lag)
+  if (!is.finite(var_lag) || var_lag < 1) {
+    stop("var_lag must be a positive integer.", call. = FALSE)
+  }
+
+  factors <- make_macro_factors(data, predictors, k = k)
+  factor_cols <- paste0("factor", seq_len(factors$k))
+
+  # Combine estimated macro factors with observed asset returns.
+  state_data <- factors$scores |>
+    dplyr::left_join(
+      data |> dplyr::select(.data$date, dplyr::all_of(returns)),
+      by = "date"
+    )
+
+
+  state_cols <- c(factor_cols, returns)
+  y <- as.data.frame(state_data[, state_cols, drop = FALSE])
+
+  if (nrow(y) <= var_lag + 5) {
+    stop(
+      "Not enough complete observations for the requested VAR lag.",
+      call. = FALSE
+    )
+  }
+
+  # Estimate a VAR(p) with a constant using the vars package.
+  # Equation form: y_t = constant + A1*y_{t-1} + ... + Ap*y_{t-p} + u_t.
+  var_fit <- vars::VAR(y, p = var_lag, type = "const")
+  var_coef <- stats::coef(var_fit)
+
+  # Convert vars::VAR coefficient tables into arrays used by the simulator.
+  transition <- extract_var_transition(var_coef, state_cols, var_lag)
+
+  # Extract one intercept per state equation.
+  constant <- vapply(
+    var_coef,
+    function(eq) eq["const", "Estimate"],
+    numeric(1)
+  )
+  names(constant) <- state_cols
+
+  residuals <- as.matrix(stats::residuals(var_fit))
+
+  residuals <- sweep(residuals, 2, colMeans(residuals), "-")
+
+  # Store the latest p states so simulated paths can start at the final sample.
+  last_states <- y[seq.int(nrow(y), nrow(y) - var_lag + 1), , drop = FALSE]
+  last_states <- as.matrix(last_states)
+  colnames(last_states) <- state_cols
+
+  list(
+    factors = factors,
+    state_data = state_data,
+    factor_cols = factor_cols,
+    model = list(
+      state_cols = state_cols,
+      constant = constant,
+      transition = transition,
+      residuals = residuals,
+      last_states = last_states,
+      var_lag = var_lag
+    )
+  )
+}
+
+extract_var_transition <- function(var_coef, state_cols, var_lag) {
+  n_state <- length(state_cols)
+
+  # transition[i, j, lag] is the coefficient from state i at lag p to
+  # equation j at the current time.
+  transition <- array(
+    NA_real_,
+    dim = c(n_state, n_state, var_lag),
+    dimnames = list(state_cols, state_cols, paste0("lag", seq_len(var_lag)))
+  )
+
+  for (lag in seq_len(var_lag)) {
+    # vars::VAR names lagged rows as variable.l1, variable.l2, etc.
+    lag_rows <- paste0(state_cols, ".l", lag)
+    transition[, , lag] <- do.call(
+      cbind,
+      lapply(var_coef, function(eq) eq[lag_rows, "Estimate"])
+    )
+  }
+
+  transition
+}
+
+simulate_favar <- function(fit, horizon, n_scenarios, seed) {
+  # The simulation loop is implemented in C++ to keep this R
+  # engine focused on data preparation and model fitting.
+  simulate_favar_cpp(fit$model, horizon, n_scenarios, seed)
+}
+
+make_return_paths <- function(states, data, returns, horizon, n_scenarios) {
+  # Build future monthly dates starting after the last observed month.
+  last_month <- as.Date(format(max(data$date), "%Y-%m-01"))
+  future_dates <- seq.Date(last_month, by = "month", length.out = horizon + 1)[-1]
+
+  # Common scenario/date grid used for each asset return column.
+  grid <- expand.grid(
+    scenario_id = seq_len(n_scenarios),
+    step = seq_len(horizon),
+    KEEP.OUT.ATTRS = FALSE
+  )
+  grid$date <- future_dates[grid$step]
+
+  # Pull only asset-return states from the simulated state array.
+  dplyr::bind_rows(lapply(returns, function(return_col) {
+    grid |>
+      dplyr::mutate(
+        asset = sub("_return$", "", return_col),
+        return_col = return_col,
+        return = as.vector(states[, , return_col])
+      ) |>
+      dplyr::select(
+        .data$scenario_id,
+        .data$date,
+        .data$asset,
+        .data$return_col,
+        .data$return
+      )
+  }))
+}
