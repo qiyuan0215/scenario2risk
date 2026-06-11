@@ -1,6 +1,9 @@
 # S3 print methods.
 
 
+#' @method print portfolio_risk
+#' @export
+#' @noRd
 print.portfolio_risk <- function(x, ...) {
   cat("portfolio risk\n")
   cat("--------------\n")
@@ -11,6 +14,9 @@ print.portfolio_risk <- function(x, ...) {
 
 
 
+#' @method print model_check
+#' @export
+#' @noRd
 print.model_check <- function(x, ...) {
   cat("rolling model check\n")
   cat("-------------------\n")

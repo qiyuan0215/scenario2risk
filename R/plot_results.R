@@ -1,10 +1,10 @@
 #' Plot simulated terminal portfolio losses
 #'
 #' `plot_portfolio_risk()` visualizes the terminal-loss distribution returned
-#' by [portfolio_risk()]. The vertical red line marks the 95 percent VaR
+#' by `portfolio_risk()`. The vertical red line marks the 95 percent VaR
 #' reported in the object.
 #'
-#' @param object An object returned by [portfolio_risk()].
+#' @param object An object returned by `portfolio_risk()`.
 #'
 #' @returns A `ggplot` object showing simulated terminal portfolio losses.
 #' @export
@@ -53,10 +53,10 @@ plot_portfolio_risk <- function(object) {
 #' Plot rolling VaR exceedance rates
 #'
 #' `plot_model_check()` visualizes the VaR exceedance-rate comparison returned
-#' by [model_check()]. The dashed red line marks the expected exceedance rate
+#' by `model_check()`. The dashed red line marks the expected exceedance rate
 #' for 95 percent VaR.
 #'
-#' @param object An object returned by [model_check()].
+#' @param object An object returned by `model_check()`.
 #'
 #' @returns A `ggplot` object comparing realized VaR exceedance rates.
 #' @export
