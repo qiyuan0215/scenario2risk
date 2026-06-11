@@ -37,14 +37,11 @@ portfolio_impact <- function(return_paths, portfolio, initial_value = 100) {
     es_95 = es_95
   )
 
-  structure(
-    list(
-      summary = risk_summary,
-      loss_distribution = loss_distribution,
-      paths = paths,
-      initial_value = initial_value
-    ),
-    class = "portfolio_impact"
+  list(
+    summary = risk_summary,
+    loss_distribution = loss_distribution,
+    paths = paths,
+    initial_value = initial_value
   )
 }
 

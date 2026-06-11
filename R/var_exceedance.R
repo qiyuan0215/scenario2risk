@@ -13,14 +13,14 @@ model_check_engine <- function(macro_data,
                                seed = 123,
                                use_parallel = FALSE,
                                n_cores = 2) {
-  # Align macro predictors and asset returns once before rolling checks.
+
   model_data <- prepare_model_data(macro_data, return_data)
   data <- model_data$data
   returns <- model_data$returns
   predictors <- model_data$predictors
 
   # Convert realized asset returns into realized portfolio returns.
-  # The forward loss is the realized h-period terminal loss used for VaR checks.
+  # The forward loss is the realized h-horizon terminal loss used for VaR checks.
   portfolio_returns <- realized_portfolio_returns(data, portfolio) |>
     dplyr::mutate(
       forward_return =
@@ -38,7 +38,7 @@ model_check_engine <- function(macro_data,
     )
   }
 
-  # Historical Simulation VaR needs at least two overlapping h-period windows.
+  # Historical Simulation VaR needs at least two overlapping h-horizon windows.
   if (window <= horizon) {
     stop(
       "window must be larger than horizon for historical simulation VaR.",
@@ -54,7 +54,7 @@ model_check_engine <- function(macro_data,
     train_data <- data[(origin - window + 1):origin, ]
     train_port <- portfolio_returns[(origin - window + 1):origin, ]
 
-    # Method 1: fit FAVAR on the past window and simulate h-period losses.
+    # Method 1: fit FAVAR on the past window and simulate h-horizon losses.
     fit <- fit_favar(
       data = train_data,
       returns = returns,
@@ -84,7 +84,7 @@ model_check_engine <- function(macro_data,
       initial_value = 100
     )
 
-    # Method 2: construct h-period losses directly from historical portfolio
+    # Method 2: construct h-horizon losses directly from historical portfolio
     # returns in the same training window.
     hs_losses <- historical_horizon_losses(
       x = train_port$portfolio_return,
@@ -115,30 +115,13 @@ model_check_engine <- function(macro_data,
     n_cores = n_cores
   )
 
-  structure(
-    list(
-      var_exceedance = summarize_var_exceedance(forecasts),
-      forecasts = forecasts,
-      settings = list(
-        horizon = horizon,
-        window = window,
-        k = k,
-        var_lag = var_lag,
-        n_scenarios = n_scenarios,
-        n_origins = length(origins),
-        seed = seed,
-        use_parallel = use_parallel,
-        n_cores = n_cores
-      )
-    ),
-    class = "model_check"
-  )
+  summarize_var_exceedance(forecasts)
 }
 
 
 summarize_var_exceedance <- function(forecasts) {
   # The comparison is frequency-based: each origin contributes one realized
-  # h-period loss and one exceedance indicator per VaR method.
+  # h-horizon loss and one exceedance indicator per VaR method.
   tibble::tibble(
     model = c("favar_scenario", "historical_simulation"),
     var_95_exceedance = c(
@@ -173,14 +156,12 @@ run_origins <- function(origin_ids, run_origin, use_parallel, n_cores) {
 
   n_cores <- min(n_cores, length(origin_ids))
 
-  # Rolling origins are independent, so they are the natural Session 6
-  # parallel-computing target.
+  # Rolling origins are independent, so they are compatible with
+  # parallel-computing.
   cluster <- parallel::makeCluster(n_cores)
   on.exit(parallel::stopCluster(cluster), add = TRUE)
 
-  # Export the closure environment to PSOCK workers without loading packages
-  # inside worker sessions. Package functions use explicit namespaces such as
-  # dplyr:: and vars::, so library() calls are unnecessary here.
+  # Export the closure environment to PSOCK workers.
   parallel::clusterExport(
     cl = cluster,
     varlist = ls(environment(run_origin)),
@@ -206,7 +187,7 @@ realized_portfolio_returns <- function(data, portfolio) {
 
 
 cumulative_forward_return <- function(x, horizon) {
-  # For origin t, use returns t+1 through t+h to form one realized h-period
+  # For origin t, use returns t+1 through t+h to form one realized h-horizon
   # return. This keeps the realized outcome aligned with the VaR horizon.
   out <- rep(NA_real_, length(x))
 
@@ -222,7 +203,7 @@ cumulative_forward_return <- function(x, horizon) {
 
 
 historical_horizon_losses <- function(x, horizon) {
-  # Historical Simulation VaR uses overlapping h-period losses inside the
+  # Historical Simulation VaR uses overlapping h-horizon losses inside the
   # training window. It is non-parametric and backward-looking.
   n_windows <- length(x) - horizon + 1
   if (n_windows < 1) {

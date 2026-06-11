@@ -1,4 +1,4 @@
-# Internal engine: FAVAR return simulation.
+# Internal tool: FAVAR return simulation.
 # Not exported; called by portfolio_risk() and model_check().
 
 simulate_favar_returns <- function(macro_data,
