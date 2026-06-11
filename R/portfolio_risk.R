@@ -53,7 +53,7 @@ portfolio_risk <- function(macro_data,
 
 
   return_data <- return_data |>
-    dplyr::select(.data$date, dplyr::all_of(required_returns))
+    dplyr::select(dplyr::all_of(c("date", required_returns)))
 
   # Simulate future monthly asset-return paths from the FAVAR engine.
   return_paths <- simulate_favar_returns(

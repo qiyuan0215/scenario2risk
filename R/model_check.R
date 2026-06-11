@@ -67,7 +67,7 @@ model_check <- function(macro_data,
 
 
   return_data <- return_data |>
-    dplyr::select(.data$date, dplyr::all_of(required_returns))
+    dplyr::select(dplyr::all_of(c("date", required_returns)))
 
   var_exceedance <- model_check_engine(
     macro_data = macro_data,

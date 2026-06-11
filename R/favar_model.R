@@ -25,7 +25,7 @@ simulate_favar_returns <- function(macro_data,
 make_macro_factors <- function(data, predictors, k = 2) {
   # Keep dates for later joins; PCA itself only uses numeric predictors.
   x <- data |>
-    dplyr::select(.data$date, dplyr::all_of(predictors))
+    dplyr::select(dplyr::all_of(c("date", predictors)))
 
   k <- min(k, length(predictors))
 
@@ -59,7 +59,7 @@ fit_favar <- function(data, returns, predictors, k, var_lag = 1) {
   # Combine estimated macro factors with observed asset returns.
   state_data <- factors$scores |>
     dplyr::left_join(
-      data |> dplyr::select(.data$date, dplyr::all_of(returns)),
+      data |> dplyr::select(dplyr::all_of(c("date", returns))),
       by = "date"
     )
 
@@ -173,18 +173,17 @@ make_return_paths <- function(states, data, returns, horizon, n_scenarios) {
 
   # Pull only asset-return states from the simulated state array.
   dplyr::bind_rows(lapply(returns, function(return_col) {
+    asset_name <- sub("_return$", "", return_col)
+    simulated_return <- as.vector(states[, , return_col, drop = TRUE])
+
     grid |>
       dplyr::mutate(
-        asset = sub("_return$", "", return_col),
+        asset = asset_name,
         return_col = return_col,
-        return = as.vector(states[, , return_col])
+        return = simulated_return
       ) |>
       dplyr::select(
-        .data$scenario_id,
-        .data$date,
-        .data$asset,
-        .data$return_col,
-        .data$return
+        dplyr::all_of(c("scenario_id", "date", "asset", "return_col", "return"))
       )
   }))
 }

@@ -49,12 +49,9 @@ build_portfolio_paths <- function(return_paths, portfolio, initial_value) {
   # Move simulated returns from long format to one column per asset return.
   returns_wide <- return_paths |>
     dplyr::select(
-      .data$scenario_id,
-      .data$date,
-      .data$return_col,
-      .data$return
+      dplyr::all_of(c("scenario_id", "date", "return_col", "return"))
     ) |>
-    tidyr::pivot_wider(names_from = .data$return_col, values_from = .data$return) |>
+    tidyr::pivot_wider(names_from = "return_col", values_from = "return") |>
     dplyr::arrange(.data$scenario_id, .data$date)
 
   # Matrix multiplication applies portfolio weights to every simulated month.

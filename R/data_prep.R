@@ -129,7 +129,7 @@ prepare_portfolio <- function(portfolio) {
   portfolio |>
     dplyr::mutate(.asset_order = match(.data$asset, REQUIRED_ASSETS)) |>
     dplyr::arrange(.data$.asset_order) |>
-    dplyr::select(.data$asset, .data$return_col, .data$weight)
+    dplyr::select(dplyr::all_of(c("asset", "return_col", "weight")))
 }
 
 
@@ -168,11 +168,11 @@ prepare_model_data <- function(macro_data, return_data) {
 
   # Keep only modelling columns and validate dates before alignment.
   macro_data <- macro_data |>
-    dplyr::select(.data$date, dplyr::all_of(predictors)) |>
+    dplyr::select(dplyr::all_of(c("date", predictors))) |>
     check_date_column("macro_data")
 
   return_data <- return_data |>
-    dplyr::select(.data$date, dplyr::all_of(returns)) |>
+    dplyr::select(dplyr::all_of(c("date", returns))) |>
     check_date_column("return_data")
 
   # Check that all macro predictors are numeric.
