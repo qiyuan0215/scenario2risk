@@ -44,7 +44,8 @@
 #'   seed = 123,
 #'   window = 120,
 #'   n_origins = 24,
-#'   use_parallel = FALSE
+#'   use_parallel = FALSE，
+#'   n_cores = 2
 #' )
 
 model_check <- function(macro_data,
