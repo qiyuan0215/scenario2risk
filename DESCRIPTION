@@ -1,11 +1,37 @@
 Package: scenario2risk
-Title: What the Package Does (One Line, Title Case)
+Title: Macro-Financial Scenario Portfolio Risk Analysis
 Version: 0.0.0.9000
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+    person("Qiyuan", "Li",
+           email = "qiyuan.li@hotmail.com",
+           role = c("aut", "cre"))
+Description: This package estimates portfolio downside risk from 
+    macro-financial scenarios. It uses principal component analysis
+    and a factor-augmented VAR
+    model to simulate equity, bond, and cash return scenarios, then reports
+    horizon-specific portfolio VaR, expected shortfall, terminal loss
+    distributions, and rolling VaR exceedance checks against historical
+    simulation benchmarks.
+License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3
+Depends:
+    R (>= 4.1.0)
+Imports:
+    dplyr,
+    ggplot2,
+    parallel,
+    Rcpp,
+    rlang,
+    stats,
+    tibble,
+    tidyr,
+    utils,
+    vars
+LinkingTo:
+    Rcpp
+Suggests:
+    readr,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
