@@ -44,7 +44,7 @@ plot_portfolio_risk <- function(object) {
     ggplot2::labs(
       x = "Terminal portfolio loss",
       y = "Scenario count",
-      title = "Simulated terminal portfolio loss"
+      title = "Simulated terminal portfolio loss distribution"
     ) +
     ggplot2::theme_minimal()
 }
