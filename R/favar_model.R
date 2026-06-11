@@ -140,7 +140,22 @@ extract_var_transition <- function(var_coef, state_cols, var_lag) {
 simulate_favar <- function(fit, horizon, n_scenarios, seed) {
   # The simulation loop is implemented in C++ to keep this R
   # engine focused on data preparation and model fitting.
-  simulate_favar_cpp(fit$model, horizon, n_scenarios, seed)
+
+  set.seed(seed)
+
+  states <- simulate_favar_cpp(
+    constant = as.numeric(fit$model$constant),
+    transition = as.numeric(fit$model$transition),
+    residuals = as.matrix(fit$model$residuals),
+    last_states = as.matrix(fit$model$last_states),
+    horizon = as.integer(horizon),
+    n_scenarios = as.integer(n_scenarios)
+  )
+
+  # Rcpp returns a plain array, so restore state names for downstream indexing.
+  dimnames(states) <- list(NULL, NULL, fit$model$state_cols)
+
+  states
 }
 
 make_return_paths <- function(states, data, returns, horizon, n_scenarios) {
