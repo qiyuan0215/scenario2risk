@@ -134,7 +134,7 @@ prepare_portfolio <- function(portfolio) {
 
 
 # Aligns macro predictors and asset returns by date before model fitting.
-#
+
 prepare_model_data <- function(macro_data, return_data) {
   # Check that both input tables have a date column for alignment.
   check_required_columns(macro_data, "date", "macro_data")
