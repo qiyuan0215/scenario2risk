@@ -1,7 +1,41 @@
-# user function: portfolio risk
-# Answers: How large could my portfolio loss be under simulated macro scenarios?
-
+#' Estimate portfolio downside risk under simulated macro-financial scenarios
+#'
+#' `portfolio_risk()` fits a factor-augmented VAR model to monthly macro
+#' predictors and equity/bond/cash returns, simulates future return paths, and
+#' reports terminal portfolio loss risk over the requested horizon.
+#'
+#' @param macro_data A data frame that contains `date` and macro predictor
+#' columns.
+#' @param return_data A data frame with `date`, `equity_return`, `bond_return`,
+#'   and `cash_return` columns.
+#' @param portfolio A data frame that contains weights for the required
+#'   assets `equity`, `bond`, and `cash`.
+#' @param horizon Integer forecast horizon in months.
+#' @param n_scenarios Integer number of simulated future paths.
+#' @param k Integer number of principal-component macro factors used in the
+#'   FAVAR state vector.
+#' @param var_lag Integer lag order for the VAR fitted to macro factors and
+#'   asset returns.
+#' @param seed Integer random seed used for bootstrap simulation.
+#'
+#' @returns An object of class `portfolio_risk`, a list with:
+#'   `risk_summary`, a one-row table of mean loss, median loss, probability of
+#'   loss, 95 percent VaR, and 95 percent expected shortfall;
+#'   `loss_distribution`, one terminal loss per simulated scenario.
 #' @export
+#'
+#' @examples
+#' risk <- portfolio_risk(
+#'   macro_data = demo_macro_data,
+#'   return_data = demo_return_data,
+#'   portfolio = demo_portfolio_weights,
+#'   horizon = 60,
+#'   n_scenarios = 500,
+#'   k = 2,
+#'   var_lag = 1,
+#'   seed = 123
+#' )
+
 portfolio_risk <- function(macro_data,
                            return_data,
                            portfolio,
@@ -10,14 +44,14 @@ portfolio_risk <- function(macro_data,
                            k = 2,
                            var_lag = 1,
                            seed = 123) {
-  # The MVP package assumes a fixed equity/bond/cash asset universe.
+  # Data prep
   required_returns <- REQUIRED_ASSET_RETURNS
   check_required_columns(return_data, c("date", required_returns), "return_data")
 
-  # Validate the user's portfolio weights and add internal return column names.
+
   portfolio <- prepare_portfolio(portfolio)
 
-  # Drop any extra return columns so the downstream model uses the fixed assets.
+
   return_data <- return_data |>
     dplyr::select(.data$date, dplyr::all_of(required_returns))
 
@@ -41,20 +75,9 @@ portfolio_risk <- function(macro_data,
 
   structure(
     list(
-      # Compact user-facing summary.
       risk_summary = impact$summary,
 
-      # One row per scenario; this is also the data used by the risk plot.
-      loss_distribution = impact$loss_distribution,
-
-      # Store modelling choices so printed objects are reproducible.
-      settings = list(
-        horizon = horizon,
-        n_scenarios = n_scenarios,
-        k = k,
-        var_lag = var_lag,
-        seed = seed
-      )
+      loss_distribution = impact$loss_distribution
     ),
     class = "portfolio_risk"
   )

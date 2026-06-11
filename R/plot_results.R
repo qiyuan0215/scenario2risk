@@ -1,6 +1,22 @@
-# user function: visualizations.
-
+#' Plot simulated terminal portfolio losses
+#'
+#' `plot_portfolio_risk()` visualizes the terminal-loss distribution returned
+#' by [portfolio_risk()]. The vertical red line marks the 95 percent VaR
+#' reported in the object.
+#'
+#' @param object An object returned by [portfolio_risk()].
+#'
+#' @returns A `ggplot` object showing simulated terminal portfolio losses.
 #' @export
+#'
+#' @examples
+#' risk <- portfolio_risk(
+#'   demo_macro_data,
+#'   demo_return_data,
+#'   demo_portfolio_weights,
+#'   n_scenarios = 500
+#' )
+#' plot_portfolio_risk(risk)
 plot_portfolio_risk <- function(object) {
   # Plot the simulated terminal-loss distribution from portfolio_risk().
   if (!inherits(object, "portfolio_risk")) {
@@ -33,7 +49,28 @@ plot_portfolio_risk <- function(object) {
     ggplot2::theme_minimal()
 }
 
+
+#' Plot rolling VaR exceedance rates
+#'
+#' `plot_model_check()` visualizes the VaR exceedance-rate comparison returned
+#' by [model_check()]. The dashed red line marks the expected exceedance rate
+#' for 95 percent VaR.
+#'
+#' @param object An object returned by [model_check()].
+#'
+#' @returns A `ggplot` object comparing realized VaR exceedance rates.
 #' @export
+#'
+#' @examples
+#' check <- model_check(
+#'   demo_macro_data,
+#'   demo_return_data,
+#'   demo_portfolio_weights,
+#'   n_scenarios = 200,
+#'   n_origins = 24,
+#'   use_parallel = FALSE
+#' )
+#' plot_model_check(check)
 plot_model_check <- function(object) {
   # Plot VaR exceedance rates from model_check().
   if (!inherits(object, "model_check")) {
