@@ -101,10 +101,21 @@
 </ul>
 </div>
 <div class="section level2">
+<h2 id="docker">Docker<a class="anchor" aria-label="anchor" href="#docker"></a>
+</h2>
+<p>If Docker Desktop is installed, the package can also be built and run in a container:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="ex">docker</span> build <span class="at">-t</span> scenario2risk .</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">--rm</span> <span class="at">-it</span> scenario2risk</span></code></pre></div>
+<p>Inside the container, load the package and test the example data:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://qiyuan0215.github.io/scenario2risk/">scenario2risk</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">demo_macro_data</span><span class="op">)</span></span></code></pre></div>
+</div>
+<div class="section level2">
 <h2 id="example-portfolio-risk">Example: Portfolio Risk<a class="anchor" aria-label="anchor" href="#example-portfolio-risk"></a>
 </h2>
 <p>The example below estimates terminal-loss risk for a simple three-asset portfolio using the package’s built-in demo data.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">risk</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/portfolio_risk.html">portfolio_risk</a></span><span class="op">(</span></span>
 <span>  macro_data <span class="op">=</span> <span class="va">demo_macro_data</span>,</span>
 <span>  return_data <span class="op">=</span> <span class="va">demo_return_data</span>,</span>
@@ -132,7 +143,7 @@
 <h2 id="example-rolling-model-check">Example: Rolling Model Check<a class="anchor" aria-label="anchor" href="#example-rolling-model-check"></a>
 </h2>
 <p><code><a href="reference/model_check.html">model_check()</a></code> compares scenario-based VaR exceedance rates with a historical simulation benchmark across rolling forecast origins.</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">check</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/model_check.html">model_check</a></span><span class="op">(</span></span>
 <span>  macro_data <span class="op">=</span> <span class="va">demo_macro_data</span>,</span>
 <span>  return_data <span class="op">=</span> <span class="va">demo_return_data</span>,</span>
