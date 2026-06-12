@@ -1,0 +1,114 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "100%"
+)
+
+devtools::load_all(".", quiet = TRUE)
+```
+
+# scenario2risk
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+`scenario2risk` estimates downside portfolio risk from simulated
+macro-financial scenarios. The package combines principal component analysis
+with a factor-augmented VAR model to generate future equity, bond, and cash
+return paths, then summarizes terminal-loss risk and rolling VaR exceedance
+diagnostics.
+
+It is designed around two main user-facing functions:
+
+- `portfolio_risk()` for scenario-based portfolio loss metrics
+- `model_check()` for rolling VaR exceedance checks against a historical
+  simulation benchmark
+
+## Installation
+
+You can install the development version from GitHub once the repository is
+online:
+
+``` r
+# install.packages("remotes")
+remotes::install_github("YOUR_GITHUB_USERNAME/scenario2risk")
+```
+
+Replace `YOUR_GITHUB_USERNAME` with your GitHub account name after you publish
+the repository.
+
+If you are working from a local copy of the project, you can also install it
+from source:
+
+``` r
+# install.packages("remotes")
+remotes::install_local(".")
+```
+
+## Example: Portfolio Risk
+
+The example below estimates terminal-loss risk for a simple three-asset
+portfolio using the package's built-in demo data.
+
+```{r example-risk, fig.height=4.5, fig.width=7, fig.cap="Simulated terminal portfolio loss distribution."}
+risk <- portfolio_risk(
+  macro_data = demo_macro_data,
+  return_data = demo_return_data,
+  portfolio = demo_portfolio_weights,
+  horizon = 12,
+  n_scenarios = 200,
+  k = 2,
+  var_lag = 1,
+  seed = 123
+)
+
+as.data.frame(risk$risk_summary)
+plot_portfolio_risk(risk)
+```
+
+## Example: Rolling Model Check
+
+`model_check()` compares scenario-based VaR exceedance rates with a historical
+simulation benchmark across rolling forecast origins.
+
+```{r example-check}
+check <- model_check(
+  macro_data = demo_macro_data,
+  return_data = demo_return_data,
+  portfolio = demo_portfolio_weights,
+  horizon = 6,
+  n_scenarios = 50,
+  k = 2,
+  var_lag = 1,
+  seed = 123,
+  window = 120,
+  n_origins = 6
+)
+
+as.data.frame(check$var_exceedance)
+```
+
+## Included Example Data
+
+The package includes three small datasets for reproducible examples and tests:
+
+- `demo_macro_data`: monthly macro predictor series
+- `demo_return_data`: monthly equity, bond, and cash returns
+- `demo_portfolio_weights`: example portfolio weights for the three assets
+
+## Development Notes
+
+`README.md` is generated from `README.Rmd`. After editing the source file, run
+the following to refresh the GitHub-facing markdown file:
+
+``` r
+devtools::build_readme()
+```
