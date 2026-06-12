@@ -1,4 +1,4 @@
-# Internal tool: rolling VaR exceedance check.
+# Internal helper: rolling VaR exceedance check.
 # Not exported; called by model_check().
 
 model_check_engine <- function(macro_data,
@@ -68,7 +68,7 @@ model_check_engine <- function(macro_data,
       seed = seed + i
     )
 
-    favar_impact <- portfolio_impact_from_states(
+    favar_impact <- portfolio_impact(
       states = states,
       returns = returns,
       portfolio = portfolio,

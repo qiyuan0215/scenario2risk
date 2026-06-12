@@ -1,14 +1,13 @@
-# Internal tool: FAVAR return simulation.
+# Internal helper: FAVAR state simulation.
 # Not exported; called by portfolio_risk() and model_check().
 
-simulate_favar_returns <- function(macro_data,
-                                   return_data,
-                                   horizon = 60,
-                                   n_scenarios = 1000,
-                                   k = 2,
-                                   var_lag = 1,
-                                   seed = 123) {
-
+simulate_favar_states <- function(macro_data,
+                                  return_data,
+                                  horizon = 60,
+                                  n_scenarios = 1000,
+                                  k = 2,
+                                  var_lag = 1,
+                                  seed = 123) {
   model_data <- prepare_model_data(macro_data, return_data)
   data <- model_data$data
   returns <- model_data$returns
@@ -18,8 +17,10 @@ simulate_favar_returns <- function(macro_data,
   fit <- fit_favar(data, returns, predictors, k = k, var_lag = var_lag)
   states <- simulate_favar(fit, horizon, n_scenarios, seed)
 
-  # Keep only the simulated asset-return variables in a tidy long table.
-  make_return_paths(states, data, returns, horizon, n_scenarios)
+  list(
+    states = states,
+    returns = returns
+  )
 }
 
 make_macro_factors <- function(data, predictors, k = 2) {
@@ -28,7 +29,6 @@ make_macro_factors <- function(data, predictors, k = 2) {
     dplyr::select(dplyr::all_of(c("date", predictors)))
 
   k <- min(k, length(predictors))
-
 
   # Scaling the predictors for the PCA.
   scaled_x <- scale(x[, predictors, drop = FALSE])
@@ -63,7 +63,6 @@ fit_favar <- function(data, returns, predictors, k, var_lag = 1) {
       by = "date"
     )
 
-
   state_cols <- c(factor_cols, returns)
   y <- as.data.frame(state_data[, state_cols, drop = FALSE])
 
@@ -91,7 +90,6 @@ fit_favar <- function(data, returns, predictors, k, var_lag = 1) {
   names(constant) <- state_cols
 
   residuals <- as.matrix(stats::residuals(var_fit))
-
   residuals <- sweep(residuals, 2, colMeans(residuals), "-")
 
   # Store the latest p states so simulated paths can start at the final sample.
@@ -156,34 +154,4 @@ simulate_favar <- function(fit, horizon, n_scenarios, seed) {
   dimnames(states) <- list(NULL, NULL, fit$model$state_cols)
 
   states
-}
-
-make_return_paths <- function(states, data, returns, horizon, n_scenarios) {
-  # Build future monthly dates starting after the last observed month.
-  last_month <- as.Date(format(max(data$date), "%Y-%m-01"))
-  future_dates <- seq.Date(last_month, by = "month", length.out = horizon + 1)[-1]
-
-  # Common scenario/date grid used for each asset return column.
-  grid <- expand.grid(
-    scenario_id = seq_len(n_scenarios),
-    step = seq_len(horizon),
-    KEEP.OUT.ATTRS = FALSE
-  )
-  grid$date <- future_dates[grid$step]
-
-  # Pull only asset-return states from the simulated state array.
-  dplyr::bind_rows(lapply(returns, function(return_col) {
-    asset_name <- sub("_return$", "", return_col)
-    simulated_return <- as.vector(states[, , return_col, drop = TRUE])
-
-    grid |>
-      dplyr::mutate(
-        asset = asset_name,
-        return_col = return_col,
-        return = simulated_return
-      ) |>
-      dplyr::select(
-        dplyr::all_of(c("scenario_id", "date", "asset", "return_col", "return"))
-      )
-  }))
 }

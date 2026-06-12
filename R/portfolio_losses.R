@@ -1,33 +1,27 @@
-# Internal tool: portfolio paths and terminal-loss risk metrics.
+# Internal helper: terminal-loss risk metrics from simulated states.
 # Not exported; called by portfolio_risk() and model_check().
 
-portfolio_impact <- function(return_paths, portfolio, initial_value = 100) {
-  # First convert simulated asset returns into simulated portfolio values.
-  paths <- build_portfolio_paths(
-    return_paths = return_paths,
+portfolio_impact <- function(states, returns, portfolio, initial_value = 100) {
+  terminal_value <- terminal_portfolio_values(
+    states = states,
+    returns = returns,
     portfolio = portfolio,
     initial_value = initial_value
   )
 
-  # Each scenario contributes exactly one horizon-end loss.
-  loss_distribution <- paths |>
-    dplyr::group_by(.data$scenario_id) |>
-    dplyr::summarise(
-      terminal_value = dplyr::last(.data$value),
-      n_months = dplyr::n(),
-      .groups = "drop"
-    ) |>
-    dplyr::mutate(
-      terminal_loss = 1 - .data$terminal_value / initial_value
-    )
+  # Each simulated path contributes one horizon-end portfolio value and loss.
+  loss_distribution <- tibble::tibble(
+    scenario_id = seq_along(terminal_value),
+    terminal_value = terminal_value,
+    n_months = dim(states)[2],
+    terminal_loss = 1 - terminal_value / initial_value
+  )
 
-  # VaR and ES are calculated from the horizon-end loss distribution.
   losses <- loss_distribution$terminal_loss[
     is.finite(loss_distribution$terminal_loss)
   ]
   var_95 <- as.numeric(stats::quantile(losses, 0.95, na.rm = TRUE))
   es_95 <- mean(losses[losses >= var_95], na.rm = TRUE)
-
 
   risk_summary <- tibble::tibble(
     mean_loss = mean(losses, na.rm = TRUE),
@@ -40,32 +34,29 @@ portfolio_impact <- function(return_paths, portfolio, initial_value = 100) {
   list(
     summary = risk_summary,
     loss_distribution = loss_distribution,
-    paths = paths,
     initial_value = initial_value
   )
 }
 
-build_portfolio_paths <- function(return_paths, portfolio, initial_value) {
-  # Move simulated returns from long format to one column per asset return.
-  returns_wide <- return_paths |>
-    dplyr::select(
-      dplyr::all_of(c("scenario_id", "date", "return_col", "return"))
-    ) |>
-    tidyr::pivot_wider(names_from = "return_col", values_from = "return") |>
-    dplyr::arrange(.data$scenario_id, .data$date)
-
-  # Matrix multiplication applies portfolio weights to every simulated month.
+terminal_portfolio_values <- function(states, returns, portfolio, initial_value) {
   weights <- stats::setNames(portfolio$weight, portfolio$return_col)
-  asset_matrix <- as.matrix(returns_wide[, names(weights), drop = FALSE])
-  portfolio_return <- as.numeric(asset_matrix %*% weights)
+  return_cols <- portfolio$return_col[portfolio$return_col %in% returns]
 
-  # Compound monthly portfolio returns into a value path for each scenario.
-  returns_wide |>
-    dplyr::mutate(portfolio_return = portfolio_return) |>
-    dplyr::group_by(.data$scenario_id) |>
-    dplyr::arrange(.data$date, .by_group = TRUE) |>
-    dplyr::mutate(
-      value = initial_value * cumprod(1 + .data$portfolio_return)
-    ) |>
-    dplyr::ungroup()
+  # Collapse the simulated asset-return states into one portfolio return per
+  # scenario-month using the fixed equity/bond/cash weights.
+  portfolio_return <- matrix(
+    0,
+    nrow = dim(states)[1],
+    ncol = dim(states)[2]
+  )
+
+  for (return_col in return_cols) {
+    portfolio_return <- portfolio_return +
+      states[, , return_col, drop = TRUE] * weights[[return_col]]
+  }
+
+  # Sum log gross returns across months, then exponentiate once to recover each
+  # scenario's terminal growth factor without an explicit row-wise loop.
+  terminal_growth <- exp(rowSums(log1p(portfolio_return)))
+  initial_value * terminal_growth
 }

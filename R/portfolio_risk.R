@@ -45,18 +45,17 @@ portfolio_risk <- function(macro_data,
                            var_lag = 1,
                            seed = 123) {
   # Data prep
-  required_returns <- REQUIRED_ASSET_RETURNS
-  check_required_columns(return_data, c("date", required_returns), "return_data")
+  check_required_columns(return_data, c("date", REQUIRED_ASSET_RETURNS), "return_data")
 
 
   portfolio <- prepare_portfolio(portfolio)
 
 
   return_data <- return_data |>
-    dplyr::select(dplyr::all_of(c("date", required_returns)))
+    dplyr::select(dplyr::all_of(c("date", REQUIRED_ASSET_RETURNS)))
 
-  # Simulate future monthly asset-return paths from the FAVAR engine.
-  return_paths <- simulate_favar_returns(
+  # Simulate future monthly states from the FAVAR engine.
+  simulation <- simulate_favar_states(
     macro_data = macro_data,
     return_data = return_data,
     horizon = horizon,
@@ -68,7 +67,8 @@ portfolio_risk <- function(macro_data,
 
   # Convert simulated asset returns into terminal portfolio losses and VaR/ES.
   impact <- portfolio_impact(
-    return_paths = return_paths,
+    states = simulation$states,
+    returns = simulation$returns,
     portfolio = portfolio,
     initial_value = 100
   )
