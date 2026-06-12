@@ -22,10 +22,6 @@
 #' @param seed Integer random seed used for bootstrap simulation.
 #' @param window Integer rolling estimation window in months.
 #' @param n_origins Integer number of most recent forecast origins to check.
-#' @param use_parallel Logical. If `TRUE`, rolling origins are evaluated with a
-#'   PSOCK cluster; otherwise they are evaluated sequentially.
-#' @param n_cores Integer number of worker processes used when
-#'   `use_parallel = TRUE`.
 #'
 #' @returns An object of class `model_check`, a list with:
 #'   `var_exceedance`, a summary table comparing FAVAR scenario VaR and
@@ -43,9 +39,7 @@
 #'   var_lag = 1,
 #'   seed = 123,
 #'   window = 120,
-#'   n_origins = 24,
-#'   use_parallel = FALSE，
-#'   n_cores = 2
+#'   n_origins = 24
 #' )
 
 model_check <- function(macro_data,
@@ -57,15 +51,11 @@ model_check <- function(macro_data,
                         var_lag = 1,
                         seed = 123,
                         window = 120,
-                        n_origins = 36,
-                        use_parallel = FALSE,
-                        n_cores = 2) {
-  # Data prep
+                        n_origins = 36) {
   required_returns <- REQUIRED_ASSET_RETURNS
   check_required_columns(return_data, c("date", required_returns), "return_data")
 
   portfolio <- prepare_portfolio(portfolio)
-
 
   return_data <- return_data |>
     dplyr::select(dplyr::all_of(c("date", required_returns)))
@@ -80,9 +70,7 @@ model_check <- function(macro_data,
     var_lag = var_lag,
     n_scenarios = n_scenarios,
     n_origins = n_origins,
-    seed = seed,
-    use_parallel = use_parallel,
-    n_cores = n_cores
+    seed = seed
   )
 
   structure(
