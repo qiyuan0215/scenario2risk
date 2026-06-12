@@ -109,7 +109,7 @@ The package works with three input tables:
 Below is the structure of the built-in example data:
 
 ```{r}
-knitr::kable(utils::head(demo_macro_data, 3), digits = 4)
+head(demo_macro_data)
 ```
 
 
@@ -127,7 +127,7 @@ These returns should be aligned at the same monthly frequency as the macro
 predictors.
 
 ```{r}
-knitr::kable(utils::head(demo_return_data, 3), digits = 4)
+head(demo_return_data)
 ```
 
 ### `portfolio`
@@ -141,7 +141,7 @@ The package expects exactly the three supported asset names and a fully
 invested long-only portfolio.
 
 ```{r}
-knitr::kable(demo_portfolio_weights, digits = 2)
+demo_portfolio_weights
 ```
 
 
@@ -164,9 +164,9 @@ horizon.
 
 ```{r}
 risk <- portfolio_risk(
-  macro_data = demo_macro_data,
-  return_data = demo_return_data,
-  portfolio = demo_portfolio_weights,
+  macro_data = macro_data,
+  return_data = return_data,
+  portfolio = portfolio,
   horizon = 12,
   n_scenarios = 200,
   k = 2,
@@ -180,7 +180,7 @@ risk
 The returned object contains two main pieces:
 
 - `risk_summary`: a one-row table of risk metrics
-- `loss_distribution`: one simulated terminal loss per scenari
+- `loss_distribution`: one simulated terminal loss per scenario
 
 Printing the returned object only gives us a risk summary.
 
@@ -197,9 +197,13 @@ simulated loss distribution.
 
 We can also visualize the simulated loss distribution:
 
-```{r fig.height=4.5, fig.width=7}
+```{r fig.show='hide'}
 plot_portfolio_risk(risk)
 ```
+
+<p align="center">
+  <img src="../reference/figures/portfolio_risk.png" alt="Portfolio risk example plot" width="80%">
+</p>
 
 In that plot, the histogram shows the simulated distribution of terminal
 portfolio loss, and the vertical red line marks the estimated 95% VaR.
@@ -218,9 +222,9 @@ evaluation:
 
 ```{r}
 check <- model_check(
-  macro_data = demo_macro_data,
-  return_data = demo_return_data,
-  portfolio = demo_portfolio_weights,
+  macro_data = macro_data,
+  return_data = return_data,
+  portfolio = portfolio,
   horizon = 6,
   n_scenarios = 50,
   k = 2,
@@ -240,9 +244,13 @@ The output reports the realized exceedance frequency for:
 
 We can visualize that comparison:
 
-```{r fig.height=4.5, fig.width=7}
+```{r fig.show='hide'}
 plot_model_check(check)
 ```
+
+<p align="center">
+  <img src="../reference/figures/VaR%20exceedance.png" alt="VaR exceedance example plot" width="80%">
+</p>
 
 The dashed red line marks the expected 5% exceedance rate for a 95% VaR model.
 
@@ -269,5 +277,4 @@ The package intentionally keeps the problem simple. In particular:
   infrastructure
 
 These design choices make the package easier to explain, test, and use.
-
 
