@@ -18,6 +18,9 @@ home:
     - authors
     - dev
 reference:
+- title: Package
+  contents:
+  - scenario2risk
 - title: Main functions
   contents:
   - portfolio_risk
@@ -29,4 +32,3 @@ reference:
   - demo_macro_data
   - demo_return_data
   - demo_portfolio_weights
-
