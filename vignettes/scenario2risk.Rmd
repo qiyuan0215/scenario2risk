@@ -164,9 +164,9 @@ horizon.
 
 ```{r}
 risk <- portfolio_risk(
-  macro_data = macro_data,
-  return_data = return_data,
-  portfolio = portfolio,
+  macro_data = demo_macro_data,
+  return_data = demo_return_data,
+  portfolio = demo_portfolio_weights,
   horizon = 12,
   n_scenarios = 200,
   k = 2,
@@ -222,9 +222,9 @@ evaluation:
 
 ```{r}
 check <- model_check(
-  macro_data = macro_data,
-  return_data = return_data,
-  portfolio = portfolio,
+  macro_data = demo_macro_data,
+  return_data = demo_return_data,
+  portfolio = demo_portfolio_weights,
   horizon = 6,
   n_scenarios = 50,
   k = 2,
@@ -277,4 +277,3 @@ The package intentionally keeps the problem simple. In particular:
   infrastructure
 
 These design choices make the package easier to explain, test, and use.
-
