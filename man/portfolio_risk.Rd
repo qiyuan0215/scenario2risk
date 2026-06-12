@@ -25,17 +25,19 @@ and \code{cash_return} columns.}
 \item{portfolio}{A data frame that contains weights for the required
 assets \code{equity}, \code{bond}, and \code{cash}.}
 
-\item{horizon}{Integer forecast horizon in months.}
+\item{horizon}{Integer forecast horizon in months. Default is \code{60}.}
 
-\item{n_scenarios}{Integer number of simulated future paths.}
+\item{n_scenarios}{Integer number of simulated future paths. Default is
+\code{1000}.}
 
 \item{k}{Integer number of principal-component macro factors used in the
-FAVAR state vector.}
+FAVAR state vector. Default is \code{2}.}
 
 \item{var_lag}{Integer lag order for the VAR fitted to macro factors and
-asset returns.}
+asset returns. Default is \code{1}.}
 
-\item{seed}{Integer random seed used for bootstrap simulation.}
+\item{seed}{Integer random seed used for bootstrap simulation. Default is
+\code{123}.}
 }
 \value{
 An object of class \code{portfolio_risk}, a list with:

@@ -10,13 +10,15 @@
 #'   and `cash_return` columns.
 #' @param portfolio A data frame that contains weights for the required
 #'   assets `equity`, `bond`, and `cash`.
-#' @param horizon Integer forecast horizon in months.
-#' @param n_scenarios Integer number of simulated future paths.
+#' @param horizon Integer forecast horizon in months. Default is `60`.
+#' @param n_scenarios Integer number of simulated future paths. Default is
+#'   `1000`.
 #' @param k Integer number of principal-component macro factors used in the
-#'   FAVAR state vector.
+#'   FAVAR state vector. Default is `2`.
 #' @param var_lag Integer lag order for the VAR fitted to macro factors and
-#'   asset returns.
-#' @param seed Integer random seed used for bootstrap simulation.
+#'   asset returns. Default is `1`.
+#' @param seed Integer random seed used for bootstrap simulation. Default is
+#'   `123`.
 #'
 #' @returns An object of class `portfolio_risk`, a list with:
 #'   `risk_summary`, a one-row table of mean loss, median loss, probability of

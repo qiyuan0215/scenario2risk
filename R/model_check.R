@@ -12,16 +12,18 @@
 #'   and `cash_return` columns.
 #' @param portfolio A data frame that contains weights for the required
 #'   assets `equity`, `bond`, and `cash`.
-#' @param horizon Integer VaR horizon in months.
+#' @param horizon Integer VaR horizon in months. Default is `12`.
 #' @param n_scenarios Integer number of simulated FAVAR paths at each rolling
-#'   forecast origin.
+#'   forecast origin. Default is `300`.
 #' @param k Integer number of principal-component macro factors used in the
-#'   FAVAR state vector.
+#'   FAVAR state vector. Default is `2`.
 #' @param var_lag Integer lag order for the VAR fitted to macro factors and
-#'   asset returns.
-#' @param seed Integer random seed used for bootstrap simulation.
-#' @param window Integer rolling estimation window in months.
+#'   asset returns. Default is `1`.
+#' @param seed Integer random seed used for bootstrap simulation. Default is
+#'   `123`.
+#' @param window Integer rolling estimation window in months. Default is `120`.
 #' @param n_origins Integer number of most recent forecast origins to check.
+#'   Default is `36`.
 #'
 #' @returns An object of class `model_check`, a list with:
 #'   `var_exceedance`, a summary table comparing FAVAR scenario VaR and
