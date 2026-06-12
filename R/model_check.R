@@ -52,13 +52,13 @@ model_check <- function(macro_data,
                         seed = 123,
                         window = 120,
                         n_origins = 36) {
-  required_returns <- REQUIRED_ASSET_RETURNS
-  check_required_columns(return_data, c("date", required_returns), "return_data")
+  # Data prep
+  check_required_columns(return_data, c("date", REQUIRED_ASSET_RETURNS), "return_data")
 
   portfolio <- prepare_portfolio(portfolio)
 
   return_data <- return_data |>
-    dplyr::select(dplyr::all_of(c("date", required_returns)))
+    dplyr::select(dplyr::all_of(c("date", REQUIRED_ASSET_RETURNS)))
 
   var_exceedance <- model_check_engine(
     macro_data = macro_data,

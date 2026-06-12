@@ -98,7 +98,7 @@ plot_model_check <- function(object) {
     ggplot2::labs(
       x = NULL,
       y = "VaR exceedance rate",
-      title = "Rolling h-period VaR exceedance"
+      title = "Rolling h-horizon VaR exceedance"
     ) +
     ggplot2::theme_minimal()
 }
