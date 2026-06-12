@@ -14,9 +14,7 @@ model_check(
   var_lag = 1,
   seed = 123,
   window = 120,
-  n_origins = 36,
-  use_parallel = FALSE,
-  n_cores = 2
+  n_origins = 36
 )
 }
 \arguments{
@@ -45,12 +43,6 @@ asset returns.}
 \item{window}{Integer rolling estimation window in months.}
 
 \item{n_origins}{Integer number of most recent forecast origins to check.}
-
-\item{use_parallel}{Logical. If \code{TRUE}, rolling origins are evaluated with a
-PSOCK cluster; otherwise they are evaluated sequentially.}
-
-\item{n_cores}{Integer number of worker processes used when
-\code{use_parallel = TRUE}.}
 }
 \value{
 An object of class \code{model_check}, a list with:
@@ -75,7 +67,6 @@ check <- model_check(
   var_lag = 1,
   seed = 123,
   window = 120,
-  n_origins = 24,
-  use_parallel = FALSE
+  n_origins = 24
 )
 }

@@ -23,8 +23,7 @@ check <- model_check(
   demo_return_data,
   demo_portfolio_weights,
   n_scenarios = 200,
-  n_origins = 24,
-  use_parallel = FALSE
+  n_origins = 24
 )
 plot_model_check(check)
 }
