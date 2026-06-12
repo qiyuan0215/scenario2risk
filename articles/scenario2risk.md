@@ -99,14 +99,22 @@ Below is the structure of the built-in example data:
 
 ``` r
 
-knitr::kable(utils::head(demo_macro_data, 3), digits = 4)
+head(demo_macro_data)
+#>         date term_spread credit_spread gs10_change   infl_yoy unrate
+#> 1 1991-01-01      0.0187        0.0141      0.0001 0.05647059  0.064
+#> 2 1991-02-01      0.0191        0.0124     -0.0024 0.05312500  0.066
+#> 3 1991-03-01      0.0220        0.0116      0.0026 0.04821151  0.068
+#> 4 1991-04-01      0.0239        0.0108     -0.0007 0.04809930  0.067
+#> 5 1991-05-01      0.0261        0.0100      0.0003 0.05034857  0.069
+#> 6 1991-06-01      0.0271        0.0095      0.0021 0.04695920  0.069
+#>     indpro_yoy  payroll_yoy housing_yoy consumer_sentiment real_short_rate
+#> 1 -0.009614606 -0.001263783  -0.4854932               66.8     0.005729412
+#> 2 -0.025779584 -0.006405570  -0.3284621               70.4     0.006275000
+#> 3 -0.036186959 -0.009777453  -0.2854926               87.7     0.010888491
+#> 4 -0.031105502 -0.012072141  -0.1979167               81.8     0.008400698
+#> 5 -0.024949781 -0.014340605  -0.1782178               78.3     0.004251433
+#> 6 -0.020371366 -0.013837051  -0.1197961               82.1     0.008740801
 ```
-
-| date | term_spread | credit_spread | gs10_change | infl_yoy | unrate | indpro_yoy | payroll_yoy | housing_yoy | consumer_sentiment | real_short_rate |
-|:---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
-| 1991-01-01 | 0.0187 | 0.0141 | 0.0001 | 0.0565 | 0.064 | -0.0096 | -0.0013 | -0.4855 | 66.8 | 0.0057 |
-| 1991-02-01 | 0.0191 | 0.0124 | -0.0024 | 0.0531 | 0.066 | -0.0258 | -0.0064 | -0.3285 | 70.4 | 0.0063 |
-| 1991-03-01 | 0.0220 | 0.0116 | 0.0026 | 0.0482 | 0.068 | -0.0362 | -0.0098 | -0.2855 | 87.7 | 0.0109 |
 
 ### `return_data`
 
@@ -122,14 +130,15 @@ macro predictors.
 
 ``` r
 
-knitr::kable(utils::head(demo_return_data, 3), digits = 4)
+head(demo_return_data)
+#>         date equity_return bond_return cash_return
+#> 1 1991-01-01        0.0521     -0.0148      0.0052
+#> 2 1991-02-01        0.0767     -0.0062      0.0048
+#> 3 1991-03-01        0.0310     -0.0130      0.0044
+#> 4 1991-04-01        0.0025      0.0149      0.0053
+#> 5 1991-05-01        0.0413     -0.0052      0.0047
+#> 6 1991-06-01       -0.0452      0.0108      0.0042
 ```
-
-| date       | equity_return | bond_return | cash_return |
-|:-----------|--------------:|------------:|------------:|
-| 1991-01-01 |        0.0521 |     -0.0148 |      0.0052 |
-| 1991-02-01 |        0.0767 |     -0.0062 |      0.0048 |
-| 1991-03-01 |        0.0310 |     -0.0130 |      0.0044 |
 
 ### `portfolio`
 
@@ -143,14 +152,12 @@ invested long-only portfolio.
 
 ``` r
 
-knitr::kable(demo_portfolio_weights, digits = 2)
+demo_portfolio_weights
+#>    asset weight
+#> 1 equity   0.55
+#> 2   bond   0.35
+#> 3   cash   0.10
 ```
-
-| asset  | weight |
-|:-------|-------:|
-| equity |   0.55 |
-| bond   |   0.35 |
-| cash   |   0.10 |
 
 ## Overall workflow
 
@@ -195,7 +202,7 @@ risk
 The returned object contains two main pieces:
 
 - `risk_summary`: a one-row table of risk metrics
-- `loss_distribution`: one simulated terminal loss per scenari
+- `loss_distribution`: one simulated terminal loss per scenario
 
 Printing the returned object only gives us a risk summary.
 
@@ -219,7 +226,7 @@ We can also visualize the simulated loss distribution:
 plot_portfolio_risk(risk)
 ```
 
-![](scenario2risk_files/figure-html/unnamed-chunk-6-1.png)
+![Portfolio risk example plot](../reference/figures/portfolio_risk.png)
 
 In that plot, the histogram shows the simulated distribution of terminal
 portfolio loss, and the vertical red line marks the estimated 95% VaR.
@@ -277,7 +284,8 @@ We can visualize that comparison:
 plot_model_check(check)
 ```
 
-![](scenario2risk_files/figure-html/unnamed-chunk-8-1.png)
+![VaR exceedance example
+plot](../reference/figures/VaR%20exceedance.png)
 
 The dashed red line marks the expected 5% exceedance rate for a 95% VaR
 model.

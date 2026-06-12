@@ -160,76 +160,21 @@ those three assets.</p>
 </ul>
 <p>Below is the structure of the built-in example data:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">demo_macro_data</span>, <span class="fl">3</span><span class="op">)</span>, digits <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></code></pre></div>
-<table class="table">
-<colgroup>
-<col width="8%">
-<col width="8%">
-<col width="10%">
-<col width="8%">
-<col width="6%">
-<col width="5%">
-<col width="8%">
-<col width="8%">
-<col width="8%">
-<col width="14%">
-<col width="11%">
-</colgroup>
-<thead><tr class="header">
-<th align="left">date</th>
-<th align="right">term_spread</th>
-<th align="right">credit_spread</th>
-<th align="right">gs10_change</th>
-<th align="right">infl_yoy</th>
-<th align="right">unrate</th>
-<th align="right">indpro_yoy</th>
-<th align="right">payroll_yoy</th>
-<th align="right">housing_yoy</th>
-<th align="right">consumer_sentiment</th>
-<th align="right">real_short_rate</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td align="left">1991-01-01</td>
-<td align="right">0.0187</td>
-<td align="right">0.0141</td>
-<td align="right">0.0001</td>
-<td align="right">0.0565</td>
-<td align="right">0.064</td>
-<td align="right">-0.0096</td>
-<td align="right">-0.0013</td>
-<td align="right">-0.4855</td>
-<td align="right">66.8</td>
-<td align="right">0.0057</td>
-</tr>
-<tr class="even">
-<td align="left">1991-02-01</td>
-<td align="right">0.0191</td>
-<td align="right">0.0124</td>
-<td align="right">-0.0024</td>
-<td align="right">0.0531</td>
-<td align="right">0.066</td>
-<td align="right">-0.0258</td>
-<td align="right">-0.0064</td>
-<td align="right">-0.3285</td>
-<td align="right">70.4</td>
-<td align="right">0.0063</td>
-</tr>
-<tr class="odd">
-<td align="left">1991-03-01</td>
-<td align="right">0.0220</td>
-<td align="right">0.0116</td>
-<td align="right">0.0026</td>
-<td align="right">0.0482</td>
-<td align="right">0.068</td>
-<td align="right">-0.0362</td>
-<td align="right">-0.0098</td>
-<td align="right">-0.2855</td>
-<td align="right">87.7</td>
-<td align="right">0.0109</td>
-</tr>
-</tbody>
-</table>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">demo_macro_data</span><span class="op">)</span></span>
+<span><span class="co">#&gt;         date term_spread credit_spread gs10_change   infl_yoy unrate</span></span>
+<span><span class="co">#&gt; 1 1991-01-01      0.0187        0.0141      0.0001 0.05647059  0.064</span></span>
+<span><span class="co">#&gt; 2 1991-02-01      0.0191        0.0124     -0.0024 0.05312500  0.066</span></span>
+<span><span class="co">#&gt; 3 1991-03-01      0.0220        0.0116      0.0026 0.04821151  0.068</span></span>
+<span><span class="co">#&gt; 4 1991-04-01      0.0239        0.0108     -0.0007 0.04809930  0.067</span></span>
+<span><span class="co">#&gt; 5 1991-05-01      0.0261        0.0100      0.0003 0.05034857  0.069</span></span>
+<span><span class="co">#&gt; 6 1991-06-01      0.0271        0.0095      0.0021 0.04695920  0.069</span></span>
+<span><span class="co">#&gt;     indpro_yoy  payroll_yoy housing_yoy consumer_sentiment real_short_rate</span></span>
+<span><span class="co">#&gt; 1 -0.009614606 -0.001263783  -0.4854932               66.8     0.005729412</span></span>
+<span><span class="co">#&gt; 2 -0.025779584 -0.006405570  -0.3284621               70.4     0.006275000</span></span>
+<span><span class="co">#&gt; 3 -0.036186959 -0.009777453  -0.2854926               87.7     0.010888491</span></span>
+<span><span class="co">#&gt; 4 -0.031105502 -0.012072141  -0.1979167               81.8     0.008400698</span></span>
+<span><span class="co">#&gt; 5 -0.024949781 -0.014340605  -0.1782178               78.3     0.004251433</span></span>
+<span><span class="co">#&gt; 6 -0.020371366 -0.013837051  -0.1197961               82.1     0.008740801</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="return_data">
@@ -245,35 +190,14 @@ those three assets.</p>
 <p>These returns should be aligned at the same monthly frequency as the
 macro predictors.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="fu">utils</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">demo_return_data</span>, <span class="fl">3</span><span class="op">)</span>, digits <span class="op">=</span> <span class="fl">4</span><span class="op">)</span></span></code></pre></div>
-<table class="table">
-<thead><tr class="header">
-<th align="left">date</th>
-<th align="right">equity_return</th>
-<th align="right">bond_return</th>
-<th align="right">cash_return</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td align="left">1991-01-01</td>
-<td align="right">0.0521</td>
-<td align="right">-0.0148</td>
-<td align="right">0.0052</td>
-</tr>
-<tr class="even">
-<td align="left">1991-02-01</td>
-<td align="right">0.0767</td>
-<td align="right">-0.0062</td>
-<td align="right">0.0048</td>
-</tr>
-<tr class="odd">
-<td align="left">1991-03-01</td>
-<td align="right">0.0310</td>
-<td align="right">-0.0130</td>
-<td align="right">0.0044</td>
-</tr>
-</tbody>
-</table>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">demo_return_data</span><span class="op">)</span></span>
+<span><span class="co">#&gt;         date equity_return bond_return cash_return</span></span>
+<span><span class="co">#&gt; 1 1991-01-01        0.0521     -0.0148      0.0052</span></span>
+<span><span class="co">#&gt; 2 1991-02-01        0.0767     -0.0062      0.0048</span></span>
+<span><span class="co">#&gt; 3 1991-03-01        0.0310     -0.0130      0.0044</span></span>
+<span><span class="co">#&gt; 4 1991-04-01        0.0025      0.0149      0.0053</span></span>
+<span><span class="co">#&gt; 5 1991-05-01        0.0413     -0.0052      0.0047</span></span>
+<span><span class="co">#&gt; 6 1991-06-01       -0.0452      0.0108      0.0042</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="portfolio">
@@ -287,27 +211,11 @@ macro predictors.</p>
 <p>The package expects exactly the three supported asset names and a
 fully invested long-only portfolio.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="va">demo_portfolio_weights</span>, digits <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
-<table class="table">
-<thead><tr class="header">
-<th align="left">asset</th>
-<th align="right">weight</th>
-</tr></thead>
-<tbody>
-<tr class="odd">
-<td align="left">equity</td>
-<td align="right">0.55</td>
-</tr>
-<tr class="even">
-<td align="left">bond</td>
-<td align="right">0.35</td>
-</tr>
-<tr class="odd">
-<td align="left">cash</td>
-<td align="right">0.10</td>
-</tr>
-</tbody>
-</table>
+<code class="sourceCode R"><span><span class="va">demo_portfolio_weights</span></span>
+<span><span class="co">#&gt;    asset weight</span></span>
+<span><span class="co">#&gt; 1 equity   0.55</span></span>
+<span><span class="co">#&gt; 2   bond   0.35</span></span>
+<span><span class="co">#&gt; 3   cash   0.10</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -356,7 +264,7 @@ components.</li>
 <code>risk_summary</code>: a one-row table of risk metrics</li>
 <li>
 <code>loss_distribution</code>: one simulated terminal loss per
-scenari</li>
+scenario</li>
 </ul>
 <p>Printing the returned object only gives us a risk summary.</p>
 <p>The <code><a href="../reference/portfolio_risk.html">portfolio_risk()</a></code> summary contains:</p>
@@ -378,7 +286,8 @@ tail of the simulated loss distribution.</p>
 <p>We can also visualize the simulated loss distribution:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_portfolio_risk.html">plot_portfolio_risk</a></span><span class="op">(</span><span class="va">risk</span><span class="op">)</span></span></code></pre></div>
-<p><img src="scenario2risk_files/figure-html/unnamed-chunk-6-1.png" class="r-plt" alt="" width="672"></p>
+<p align="center">
+<img src="../reference/figures/portfolio_risk.png" alt="Portfolio risk example plot" width="80%"></p>
 <p>In that plot, the histogram shows the simulated distribution of
 terminal portfolio loss, and the vertical red line marks the estimated
 95% VaR.</p>
@@ -432,7 +341,8 @@ benchmark</li>
 <p>We can visualize that comparison:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/plot_model_check.html">plot_model_check</a></span><span class="op">(</span><span class="va">check</span><span class="op">)</span></span></code></pre></div>
-<p><img src="scenario2risk_files/figure-html/unnamed-chunk-8-1.png" class="r-plt" alt="" width="672"></p>
+<p align="center">
+<img src="../reference/figures/VaR%20exceedance.png" alt="VaR exceedance example plot" width="80%"></p>
 <p>The dashed red line marks the expected 5% exceedance rate for a 95%
 VaR model.</p>
 </div>
