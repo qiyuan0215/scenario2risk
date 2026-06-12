@@ -20,8 +20,32 @@ You can install the development version from GitHub with:
 
 ``` r
 
-# install.packages("devtools")
-devtools::install_github("qiyuan0215/scenario2risk")
+# install.packages("remotes")
+remotes::install_github("qiyuan0215/scenario2risk")
+```
+
+On Windows, installing from GitHub may require `Rtools` because the
+package contains compiled C++ code via `Rcpp`.
+
+If you want a more reproducible setup, use the provided Docker workflow
+instead.
+
+## Docker
+
+If Docker Desktop is installed, the package can also be built and run in
+a container:
+
+``` bash
+docker build -t scenario2risk .
+docker run --rm -it scenario2risk
+```
+
+Inside the container, load the package and test the example data:
+
+``` r
+
+library(scenario2risk)
+head(demo_macro_data)
 ```
 
 ## Features
@@ -41,24 +65,6 @@ Documentation is available in the vignette:
 
 - [A Tour of
   scenario2risk](https://qiyuan0215.github.io/scenario2risk/articles/scenario2risk.html)
-
-## Docker
-
-If Docker Desktop is installed, the package can also be built and run in
-a container:
-
-``` bash
-docker build -t scenario2risk .
-docker run --rm -it scenario2risk
-```
-
-Inside the container, load the package and test the example data:
-
-``` r
-
-library(scenario2risk)
-head(demo_macro_data)
-```
 
 ## Example: Portfolio Risk
 
