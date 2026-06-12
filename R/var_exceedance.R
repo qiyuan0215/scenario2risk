@@ -161,16 +161,109 @@ run_origins <- function(origin_ids, run_origin, use_parallel, n_cores) {
   cluster <- parallel::makeCluster(n_cores)
   on.exit(parallel::stopCluster(cluster), add = TRUE)
 
-  # Export the closure environment to PSOCK workers.
+  # Build a self-contained worker context so PSOCK workers can access
+  # internal helpers from a development load_all() session.
+  worker_context <- make_parallel_worker_context(run_origin)
+  load_parallel_worker_dll(cluster)
+
   parallel::clusterExport(
     cl = cluster,
-    varlist = ls(environment(run_origin)),
-    envir = environment(run_origin)
+    varlist = ls(worker_context, all.names = TRUE),
+    envir = worker_context
   )
 
   dplyr::bind_rows(
-    parallel::parLapply(cluster, origin_ids, run_origin)
+    parallel::parLapply(cluster, origin_ids, worker_context$run_origin)
   )
+}
+
+
+make_parallel_worker_context <- function(run_origin) {
+  source_env <- environment(run_origin)
+  worker_env <- new.env(parent = baseenv())
+
+  # Keep the run-specific data and options in a plain environment that can be
+  # serialized to PSOCK workers.
+  for (name in ls(source_env, all.names = TRUE)) {
+    worker_env[[name]] <- get(name, envir = source_env, inherits = FALSE)
+  }
+
+  helper_names <- c(
+    "fit_favar",
+    "make_macro_factors",
+    "extract_var_transition",
+    "simulate_favar",
+    "make_return_paths",
+    "portfolio_impact",
+    "build_portfolio_paths",
+    "historical_horizon_losses"
+  )
+
+  for (name in helper_names) {
+    worker_env[[name]] <- get(name, envir = environment(run_origins))
+  }
+
+  # Use a local wrapper that resolves the compiled routine from the DLL loaded
+  # on each worker instead of relying on the namespace-side external pointer.
+  worker_env$simulate_favar_cpp <- function(constant,
+                                            transition,
+                                            residuals,
+                                            last_states,
+                                            horizon,
+                                            n_scenarios) {
+    .Call(
+      "_scenario2risk_simulate_favar_cpp",
+      constant,
+      transition,
+      residuals,
+      last_states,
+      horizon,
+      n_scenarios,
+      PACKAGE = "scenario2risk"
+    )
+  }
+
+  # Rebind helper functions into the same environment so they can resolve
+  # each other on workers without relying on the package namespace.
+  for (name in helper_names) {
+    if (is.function(worker_env[[name]])) {
+      environment(worker_env[[name]]) <- worker_env
+    }
+  }
+
+  worker_run_origin <- run_origin
+  environment(worker_run_origin) <- worker_env
+  worker_env$run_origin <- worker_run_origin
+
+  worker_env
+}
+
+
+load_parallel_worker_dll <- function(cluster) {
+  dll_info <- getLoadedDLLs()[["scenario2risk"]]
+  if (is.null(dll_info) || !nzchar(dll_info[["path"]])) {
+    return(invisible(NULL))
+  }
+
+  dll_path <- dll_info[["path"]]
+
+  parallel::clusterCall(cluster, function(path) {
+    loadNamespace("Rcpp")
+
+    loaded_paths <- vapply(
+      getLoadedDLLs(),
+      function(info) info[["path"]],
+      character(1)
+    )
+
+    if (!path %in% loaded_paths) {
+      dyn.load(path)
+    }
+
+    invisible(NULL)
+  }, dll_path)
+
+  invisible(NULL)
 }
 
 
