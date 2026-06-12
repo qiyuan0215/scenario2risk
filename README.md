@@ -1,50 +1,67 @@
+
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-
-
 
 # scenario2risk
 
 <!-- badges: start -->
+
 <!-- badges: end -->
 
 `scenario2risk` estimates downside portfolio risk from simulated
-macro-financial scenarios. The package combines principal component analysis
-with a factor-augmented VAR model to generate future equity, bond, and cash
-return paths, then summarizes terminal-loss risk and rolling VaR exceedance
-diagnostics.
+macro-financial scenarios. The package combines principal component
+analysis with a factor-augmented VAR model to generate future equity,
+bond, and cash return paths, then summarizes terminal-loss risk and
+rolling VaR exceedance diagnostics.
 
-It is designed around two main user-facing functions:
+It is designed for a simple three-asset setting with equity, bond, and
+cash weights, and focuses on two practical tasks:
 
-- `portfolio_risk()` for scenario-based portfolio loss metrics
-- `model_check()` for rolling VaR exceedance checks against a historical
-  simulation benchmark
+- estimating terminal portfolio loss risk from simulated macro-financial
+  scenarios
+- checking how often scenario-based VaR is exceeded relative to realized
+  historical outcomes
 
 ## Installation
 
-You can install the development version from GitHub once the repository is
-online:
+You can install the development version from GitHub with:
 
 ``` r
-# install.packages("remotes")
-remotes::install_github("YOUR_GITHUB_USERNAME/scenario2risk")
+# install.packages("devtools")
+devtools::install_github("qiyuan0215/scenario2risk")
 ```
 
-Replace `YOUR_GITHUB_USERNAME` with your GitHub account name after you publish
-the repository.
+## Features
 
-If you are working from a local copy of the project, you can also install it
-from source:
+The package currently provides the following user-facing functions:
 
-``` r
-# install.packages("remotes")
-remotes::install_local(".")
-```
+| Function | Purpose |
+|:---|:---|
+| portfolio_risk() | This function estimates terminal-loss risk metrics such as mean loss, VaR, and expected shortfall. |
+| plot_portfolio_risk() | This function visualizes the simulated terminal-loss distribution with the 95% VaR marker. |
+| model_check() | This function compares rolling VaR exceedance rates for the FAVAR scenario model and a historical simulation benchmark. |
+| plot_model_check() | This function visualizes rolling VaR exceedance rates against the expected 5% threshold. |
+
+## Documentation
+
+Current documentation is available through the package help files:
+
+- `?portfolio_risk`
+- `?plot_portfolio_risk`
+- `?model_check`
+- `?plot_model_check`
+
+The package also includes a longer tutorial vignette:
+
+- `vignette("scenario2risk", package = "scenario2risk")`
+- `browseVignettes("scenario2risk")`
+
+If you later build a pkgdown site, this vignette can be linked in the
+same way as the article page shown in packages like `stockAnalyzer`.
 
 ## Example: Portfolio Risk
 
 The example below estimates terminal-loss risk for a simple three-asset
-portfolio using the package's built-in demo data.
-
+portfolio using the package’s built-in demo data.
 
 ``` r
 risk <- portfolio_risk(
@@ -58,22 +75,27 @@ risk <- portfolio_risk(
   seed = 123
 )
 
-as.data.frame(risk$risk_summary)
-#>     mean_loss median_loss probability_of_loss     var_95     es_95
-#> 1 -0.08023076 -0.07399896               0.195 0.07787515 0.1016141
+risk
+#> portfolio risk
+#> --------------
+#> 
+#> Terminal-loss risk metrics:
+#> # A tibble: 1 × 5
+#>   mean_loss median_loss probability_of_loss var_95 es_95
+#>       <dbl>       <dbl>               <dbl>  <dbl> <dbl>
+#> 1   -0.0802     -0.0740               0.195 0.0779 0.102
 plot_portfolio_risk(risk)
 ```
 
-<div class="figure">
-<img src="man/figures/README-example-risk-1.png" alt="Simulated terminal portfolio loss distribution." width="100%" />
-<p class="caption">Simulated terminal portfolio loss distribution.</p>
-</div>
+<p align="center">
+
+<img src="man/figures/portfolio_risk.png" alt="Portfolio risk example plot" width="80%">
+</p>
 
 ## Example: Rolling Model Check
 
-`model_check()` compares scenario-based VaR exceedance rates with a historical
-simulation benchmark across rolling forecast origins.
-
+`model_check()` compares scenario-based VaR exceedance rates with a
+historical simulation benchmark across rolling forecast origins.
 
 ``` r
 check <- model_check(
@@ -89,28 +111,31 @@ check <- model_check(
   n_origins = 6
 )
 
-as.data.frame(check$var_exceedance)
-#>                   model var_95_exceedance expected_exceedance n_origins
-#> 1        favar_scenario                 0                0.05         6
-#> 2 historical_simulation                 0                0.05         6
-#>   n_exceedances
-#> 1             0
-#> 2             0
+check
+#> rolling model check
+#> -------------------
+#> 
+#> VaR exceedance rate:
+#> # A tibble: 2 × 5
+#>   model            var_95_exceedance expected_exceedance n_origins n_exceedances
+#>   <chr>                        <dbl>               <dbl>     <int>         <int>
+#> 1 favar_scenario                   0                0.05         6             0
+#> 2 historical_simu…                 0                0.05         6             0
+plot_model_check(check)
 ```
 
-## Included Example Data
+<p align="center">
 
-The package includes three small datasets for reproducible examples and tests:
+<img src="man/figures/VaR%20exceedance.png" alt="VaR exceedance example plot" width="80%">
+</p>
 
-- `demo_macro_data`: monthly macro predictor series
-- `demo_return_data`: monthly equity, bond, and cash returns
-- `demo_portfolio_weights`: example portfolio weights for the three assets
+## Example Data
 
-## Development Notes
+The package includes three small datasets for reproducible examples and
+tests:
 
-`README.md` is generated from `README.Rmd`. After editing the source file, run
-the following to refresh the GitHub-facing markdown file:
-
-``` r
-devtools::build_readme()
-```
+| Dataset | Description |
+|:---|:---|
+| demo_macro_data | Monthly macro predictor series used to estimate the factor structure. |
+| demo_return_data | Monthly equity, bond, and cash return series aligned by date. |
+| demo_portfolio_weights | Example weights for the three-asset portfolio. |
