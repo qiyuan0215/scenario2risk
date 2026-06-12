@@ -81,7 +81,7 @@ plot_model_check <- function(object) {
 
   ggplot2::ggplot(
     object$var_exceedance,
-    ggplot2::aes(x = reorder(.data$model, .data$var_95_exceedance),
+    ggplot2::aes(x = stats::reorder(.data$model, .data$var_95_exceedance),
                  y = .data$var_95_exceedance)
   ) +
     ggplot2::geom_col(fill = "#54a24b", width = 0.7) +

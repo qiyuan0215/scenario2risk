@@ -2,3 +2,5 @@
 ^\.Rproj\.user$
 ^LICENSE\.md$
 ^README\.Rmd$
+^man/figures/VaR exceedance\.png$
+^man/figures/portfolio_risk\.png$
