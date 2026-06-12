@@ -1,0 +1,8 @@
+.git
+.github
+.Rproj.user
+.Rhistory
+.RData
+.Rprofile
+docs
+pkgdown
