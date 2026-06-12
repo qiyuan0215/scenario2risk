@@ -21,7 +21,6 @@ Depends:
 Imports:
     dplyr,
     ggplot2,
-    parallel,
     Rcpp,
     rlang,
     stats,
