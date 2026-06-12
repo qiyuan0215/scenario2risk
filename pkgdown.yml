@@ -1,0 +1,9 @@
+pandoc: 3.8.3
+pkgdown: 2.2.0
+pkgdown_sha: ~
+articles:
+  scenario2risk: scenario2risk.html
+last_built: 2026-06-12T13:03Z
+urls:
+  reference: https://qiyuan0215.github.io/scenario2risk/reference
+  article: https://qiyuan0215.github.io/scenario2risk/articles
