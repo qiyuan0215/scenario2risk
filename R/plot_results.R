@@ -67,8 +67,7 @@ plot_portfolio_risk <- function(object) {
 #'   demo_return_data,
 #'   demo_portfolio_weights,
 #'   n_scenarios = 200,
-#'   n_origins = 24,
-#'   use_parallel = FALSE
+#'   n_origins = 24
 #' )
 #' plot_model_check(check)
 plot_model_check <- function(object) {
