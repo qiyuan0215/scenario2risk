@@ -70,20 +70,9 @@ knitr::kable(feature_table, align = c("l", "l"))
 
 ## Documentation
 
-Current documentation is available through the package help files:
+Documentation is available in the vignette:
 
-- `?portfolio_risk`
-- `?plot_portfolio_risk`
-- `?model_check`
-- `?plot_model_check`
-
-The package also includes a longer tutorial vignette:
-
-- `vignette("scenario2risk", package = "scenario2risk")`
-- `browseVignettes("scenario2risk")`
-
-If you later build a pkgdown site, this vignette can be linked in the same way
-as the article page shown in packages like `stockAnalyzer`.
+- [A Tour of scenario2risk](https://qiyuan0215.github.io/scenario2risk/articles/scenario2risk.html)
 
 ## Example: Portfolio Risk
 
@@ -103,7 +92,6 @@ risk <- portfolio_risk(
 )
 
 risk
-plot_portfolio_risk(risk)
 ```
 
 <p align="center">
@@ -130,7 +118,6 @@ check <- model_check(
 )
 
 check
-plot_model_check(check)
 ```
 
 <p align="center">
