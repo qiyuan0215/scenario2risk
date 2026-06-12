@@ -1,5 +1,11 @@
 # Package index
 
+## Package
+
+- [`scenario2risk-package`](https://qiyuan0215.github.io/scenario2risk/reference/scenario2risk.md)
+  [`scenario2risk`](https://qiyuan0215.github.io/scenario2risk/reference/scenario2risk.md)
+  : scenario2risk: Macro-financial scenario portfolio risk analysis
+
 ## Main functions
 
 - [`portfolio_risk()`](https://qiyuan0215.github.io/scenario2risk/reference/portfolio_risk.md)
