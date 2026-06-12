@@ -1,0 +1,32 @@
+url: https://qiyuan0215.github.io/scenario2risk/
+template:
+  bootstrap: 5
+navbar:
+  structure:
+    left:
+    - get-started
+    - reference
+    - articles
+    right: github
+home:
+  sidebar:
+    structure:
+    - links
+    - license
+    - community
+    - citation
+    - authors
+    - dev
+reference:
+- title: Main functions
+  contents:
+  - portfolio_risk
+  - plot_portfolio_risk
+  - model_check
+  - plot_model_check
+- title: Example data
+  contents:
+  - demo_macro_data
+  - demo_return_data
+  - demo_portfolio_weights
+

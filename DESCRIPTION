@@ -31,7 +31,11 @@ Imports:
 LinkingTo:
     Rcpp
 Suggests:
+    knitr,
     readr,
+    rmarkdown,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 LazyData: true
+VignetteBuilder: knitr
+URL: https://qiyuan0215.github.io/scenario2risk/

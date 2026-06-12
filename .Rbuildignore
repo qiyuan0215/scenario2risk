@@ -4,3 +4,7 @@
 ^README\.Rmd$
 ^man/figures/VaR exceedance\.png$
 ^man/figures/portfolio_risk\.png$
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^\.github$
