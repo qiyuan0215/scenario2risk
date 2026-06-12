@@ -37,20 +37,10 @@ The package currently provides the following user-facing functions:
 
 ## Documentation
 
-Current documentation is available through the package help files:
+Documentation is available in the vignette:
 
-- [`?portfolio_risk`](https://qiyuan0215.github.io/scenario2risk/reference/portfolio_risk.md)
-- [`?plot_portfolio_risk`](https://qiyuan0215.github.io/scenario2risk/reference/plot_portfolio_risk.md)
-- [`?model_check`](https://qiyuan0215.github.io/scenario2risk/reference/model_check.md)
-- [`?plot_model_check`](https://qiyuan0215.github.io/scenario2risk/reference/plot_model_check.md)
-
-The package also includes a longer tutorial vignette:
-
-- [`vignette("scenario2risk", package = "scenario2risk")`](https://qiyuan0215.github.io/scenario2risk/articles/scenario2risk.md)
-- `browseVignettes("scenario2risk")`
-
-If you later build a pkgdown site, this vignette can be linked in the
-same way as the article page shown in packages like `stockAnalyzer`.
+- [A Tour of
+  scenario2risk](https://qiyuan0215.github.io/scenario2risk/articles/scenario2risk.html)
 
 ## Example: Portfolio Risk
 
@@ -79,7 +69,6 @@ risk
 #>   mean_loss median_loss probability_of_loss var_95 es_95
 #>       <dbl>       <dbl>               <dbl>  <dbl> <dbl>
 #> 1   -0.0802     -0.0740               0.195 0.0779 0.102
-plot_portfolio_risk(risk)
 ```
 
 ![Portfolio risk example plot](reference/figures/portfolio_risk.png)
@@ -115,7 +104,6 @@ check
 #>   <chr>                        <dbl>               <dbl>     <int>         <int>
 #> 1 favar_scenario                   0                0.05         6             0
 #> 2 historical_simu…                 0                0.05         6             0
-plot_model_check(check)
 ```
 
 ![VaR exceedance example plot](reference/figures/VaR%20exceedance.png)

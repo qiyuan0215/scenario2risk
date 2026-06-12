@@ -95,19 +95,10 @@
 <div class="section level2">
 <h2 id="documentation">Documentation<a class="anchor" aria-label="anchor" href="#documentation"></a>
 </h2>
-<p>Current documentation is available through the package help files:</p>
+<p>Documentation is available in the vignette:</p>
 <ul>
-<li><code><a href="reference/portfolio_risk.html">?portfolio_risk</a></code></li>
-<li><code><a href="reference/plot_portfolio_risk.html">?plot_portfolio_risk</a></code></li>
-<li><code><a href="reference/model_check.html">?model_check</a></code></li>
-<li><code><a href="reference/plot_model_check.html">?plot_model_check</a></code></li>
+<li><a href="https://qiyuan0215.github.io/scenario2risk/articles/scenario2risk.html">A Tour of scenario2risk</a></li>
 </ul>
-<p>The package also includes a longer tutorial vignette:</p>
-<ul>
-<li><code><a href="articles/scenario2risk.html">vignette("scenario2risk", package = "scenario2risk")</a></code></li>
-<li><code>browseVignettes("scenario2risk")</code></li>
-</ul>
-<p>If you later build a pkgdown site, this vignette can be linked in the same way as the article page shown in packages like <code>stockAnalyzer</code>.</p>
 </div>
 <div class="section level2">
 <h2 id="example-portfolio-risk">Example: Portfolio Risk<a class="anchor" aria-label="anchor" href="#example-portfolio-risk"></a>
@@ -133,8 +124,7 @@
 <span><span class="co">#&gt; # A tibble: 1 × 5</span></span>
 <span><span class="co">#&gt;   mean_loss median_loss probability_of_loss var_95 es_95</span></span>
 <span><span class="co">#&gt;       &lt;dbl&gt;       &lt;dbl&gt;               &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;</span></span>
-<span><span class="co">#&gt; 1   -0.0802     -0.0740               0.195 0.0779 0.102</span></span>
-<span><span class="fu"><a href="reference/plot_portfolio_risk.html">plot_portfolio_risk</a></span><span class="op">(</span><span class="va">risk</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co">#&gt; 1   -0.0802     -0.0740               0.195 0.0779 0.102</span></span></code></pre></div>
 <p align="center">
 <img src="reference/figures/portfolio_risk.png" alt="Portfolio risk example plot" width="80%"></p>
 </div>
@@ -165,8 +155,7 @@
 <span><span class="co">#&gt;   model            var_95_exceedance expected_exceedance n_origins n_exceedances</span></span>
 <span><span class="co">#&gt;   &lt;chr&gt;                        &lt;dbl&gt;               &lt;dbl&gt;     &lt;int&gt;         &lt;int&gt;</span></span>
 <span><span class="co">#&gt; 1 favar_scenario                   0                0.05         6             0</span></span>
-<span><span class="co">#&gt; 2 historical_simu…                 0                0.05         6             0</span></span>
-<span><span class="fu"><a href="reference/plot_model_check.html">plot_model_check</a></span><span class="op">(</span><span class="va">check</span><span class="op">)</span></span></code></pre></div>
+<span><span class="co">#&gt; 2 historical_simu…                 0                0.05         6             0</span></span></code></pre></div>
 <p align="center">
 <img src="reference/figures/VaR%20exceedance.png" alt="VaR exceedance example plot" width="80%"></p>
 </div>
